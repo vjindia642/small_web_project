@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Fundamentals Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .subject-section { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h2 { color: var(--primary); border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .question { margin-bottom: 20px; padding: 15px; border-left: 4px solid #3b82f6; background: #f1f5f9; }
+        .options { display: grid; gap: 10px; margin-top: 10px; }
+        .option-btn { padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; background: white; text-align: left; transition: 0.2s; }
+        .option-btn:hover { background: #e2e8f0; }
+        .correct { background: #86efac !important; border-color: #22c55e !important; }
+        .wrong { background: #fca5a5 !important; border-color: #ef4444 !important; }
+        .score-float { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 10px 15px rgba(0,0,0,0.2); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Computer Science Practice Quiz</h1>
+    <div id="quiz-content"></div>
+</div>
+
+<div class="score-float">Score: <span id="score">0</span> / 40</div>
+
+<script>
+const quizData = [
+    {
+        subject: "Data Structures & Algorithms",
+        questions: [
+            { q: "What is the time complexity of searching in a balanced Binary Search Tree?", a: "O(log n)", b: "O(n)", c: "O(n log n)", d: "O(1)", ans: "a" },
+            { q: "Which data structure uses LIFO (Last In First Out) order?", a: "Queue", b: "Stack", c: "Linked List", d: "Array", ans: "b" },
+            { q: "Which algorithm is used for finding the shortest path in a weighted graph?", a: "DFS", b: "BFS", c: "Dijkstra's", d: "Bubble Sort", ans: "c" },
+            { q: "What is the worst-case time complexity of QuickSort?", a: "O(n)", b: "O(n log n)", c: "O(n²)", d: "O(log n)", ans: "c" },
+            { q: "A linear data structure where elements are not stored in contiguous memory locations is?", a: "Array", b: "Linked List", c: "Stack", d: "Queue", ans: "b" }
+        ]
+    },
+    {
+        subject: "Operating Systems",
+        questions: [
+            { q: "What is a 'Deadlock'?", a: "Infinite Loop", b: "Waiting for a resource forever", c: "System Crash", d: "Memory Leak", ans: "b" },
+            { q: "Which scheduling algorithm can lead to starvation?", a: "Round Robin", b: "FIFO", c: "Priority Scheduling", d: "Shortest Job First", ans: "c" },
+            { q: "What is the main purpose of virtual memory?", a: "Increase RAM speed", b: "Allow programs larger than physical memory to run", c: "Store permanent files", d: "None", ans: "b" },
+            { q: "What is a 'Page Fault'?", a: "Error in program code", b: "Accessing a page not in RAM", c: "Hard drive crash", d: "Cache miss", ans: "b" },
+            { q: "Which of the following is not a process state?", a: "Ready", b: "Running", c: "Waiting", d: "Execution", ans: "d" }
+        ]
+    },
+    {
+        subject: "Theory of Computation (TOC)",
+        questions: [
+            { q: "Which automaton is used to recognize Regular Languages?", a: "PDA", b: "Finite Automata", c: "Turing Machine", d: "Post Machine", ans: "b" },
+            { q: "Context-Free Grammar (CFG) is recognized by:", a: "DFA", b: "NFA", c: "Pushdown Automata", d: "Linear Bounded Automata", ans: "c" },
+            { q: "The 'Halting Problem' is:", a: "Decidable", b: "Undecidable", c: "Recursive", d: "Context-free", ans: "b" },
+            { q: "Which of the following is the most powerful machine?", a: "PDA", b: "FSA", c: "Turing Machine", d: "Mealy Machine", ans: "c" },
+            { q: "Regular expressions are used for which type of grammar?", a: "Type 0", b: "Type 1", c: "Type 2", d: "Type 3", ans: "d" }
+        ]
+    },
+    {
+        subject: "Computer Organization & Architecture (COA)",
+        questions: [
+            { q: "What does the Program Counter (PC) hold?", a: "Address of current instruction", b: "Address of next instruction", c: "Value of the data", d: "None", ans: "b" },
+            { q: "Which memory is the fastest?", a: "RAM", b: "Hard Disk", c: "Cache", d: "Registers", ans: "d" },
+            { q: "What is the purpose of a 'Control Unit'?", a: "Arithmetic operations", b: "Data storage", c: "Directing operations of the processor", d: "Input processing", ans: "c" },
+            { q: "In 2's complement, -5 is represented as (8-bit):", a: "11111011", b: "11111010", c: "00000101", d: "10000101", ans: "a" },
+            { q: "Which bus is bidirectional?", a: "Address Bus", b: "Data Bus", c: "Control Bus", d: "None", ans: "b" }
+        ]
+    },
+    {
+        subject: "C Programming",
+        questions: [
+            { q: "What is the size of 'int' in a 32-bit system?", a: "2 bytes", b: "4 bytes", c: "8 bytes", d: "Depends on compiler", ans: "b" },
+            { q: "Which operator is used to get the address of a variable?", a: "*", b: "->", c: "&", d: "&&", ans: "c" },
+            { q: "What will 'printf' return on success?", a: "0", b: "1", c: "Number of characters printed", d: "The input string", ans: "c" },
+            { q: "Which function is used to release dynamic memory?", a: "remove()", b: "delete()", c: "free()", d: "drop()", ans: "c" },
+            { q: "Array indexing in C starts from:", a: "1", b: "0", c: "-1", d: "Any value", ans: "b" }
+        ]
+    },
+    {
+        subject: "DBMS",
+        questions: [
+            { q: "What is a 'Primary Key'?", a: "Can be null", b: "Uniquely identifies a record", c: "Must be a string", d: "Can have duplicates", ans: "b" },
+            { q: "Which SQL command is used to remove all records but keep the structure?", a: "DROP", b: "DELETE", c: "TRUNCATE", d: "REMOVE", ans: "c" },
+            { q: "ACID properties stand for:", a: "Atomicity, Consistency, Isolation, Durability", b: "Access, Control, Integrity, Data", c: "Atomicity, Capacity, Instance, Data", d: "None", ans: "a" },
+            { q: "What is a 'Foreign Key' used for?", a: "Data encryption", b: "Linking two tables", c: "Speeding up queries", d: "Sorting", ans: "b" },
+            { q: "Which Normal Form deals with 'Transitive Dependency'?", a: "1NF", b: "2NF", c: "3NF", d: "BCNF", ans: "c" }
+        ]
+    },
+    {
+        subject: "Compiler Design",
+        questions: [
+            { q: "The first phase of a compiler is:", a: "Syntax Analysis", b: "Lexical Analysis", c: "Semantic Analysis", d: "Code Generation", ans: "b" },
+            { q: "A 'Lexeme' is scanned by:", a: "Parser", b: "Scanner", c: "Linker", d: "Loader", ans: "b" },
+            { q: "A Symbol Table is used for:", a: "Storing variable names and types", b: "Generating machine code", c: "Optimizing loops", d: "Error reporting only", ans: "a" },
+            { q: "Parsing is also known as:", a: "Lexical Analysis", b: "Syntax Analysis", c: "Semantic Analysis", d: "Code Optimization", ans: "b" },
+            { q: "Which of the following is a bottom-up parser?", a: "LL(1)", b: "Recursive Descent", c: "LR Parser", d: "Predictive Parser", ans: "c" }
+        ]
+    },
+    {
+        subject: "Networking",
+        questions: [
+            { q: "How many layers are in the OSI model?", a: "5", b: "6", c: "7", d: "8", ans: "c" },
+            { q: "Which protocol is 'connectionless'?", a: "TCP", b: "UDP", c: "HTTP", d: "FTP", ans: "b" },
+            { q: "IP Address works at which layer?", a: "Data Link", b: "Network", c: "Transport", d: "Session", ans: "b" },
+            { q: "What is the port number for HTTP?", a: "443", b: "21", c: "80", d: "25", ans: "c" },
+            { q: "MAC Address is also known as:", a: "Logical Address", b: "IP Address", c: "Physical Address", d: "Network Address", ans: "c" }
+        ]
+    }
+];
+
+let score = 0;
+const quizContainer = document.getElementById('quiz-content');
+
+quizData.forEach((section, sIdx) => {
+    let sectionHtml = `<div class="subject-section"><h2>${section.subject}</h2>`;
+    section.questions.forEach((q, qIdx) => {
+        sectionHtml += `
+            <div class="question">
+                <p><strong>Q${qIdx+1}:</strong> ${q.q}</p>
+                <div class="options">
+                    <button class="option-btn" onclick="check(this, '${q.ans}', 'a')">A) ${q.a}</button>
+                    <button class="option-btn" onclick="check(this, '${q.ans}', 'b')">B) ${q.b}</button>
+                    <button class="option-btn" onclick="check(this, '${q.ans}', 'c')">C) ${q.c}</button>
+                    <button class="option-btn" onclick="check(this, '${q.ans}', 'd')">D) ${q.d}</button>
+                </div>
+            </div>`;
+    });
+    sectionHtml += `</div>`;
+    quizContainer.innerHTML += sectionHtml;
+});
+
+function check(btn, correct, chosen) {
+    const parent = btn.parentElement;
+    const buttons = parent.querySelectorAll('.option-btn');
+    
+    // Disable all buttons in this question
+    buttons.forEach(b => b.style.pointerEvents = 'none');
+
+    if(chosen === correct) {
+        btn.classList.add('correct');
+        score++;
+        document.getElementById('score').innerText = score;
+    } else {
+        btn.classList.add('wrong');
+        // Highlight the correct one
+        buttons.forEach(b => {
+            if(b.innerText.toLowerCase().startsWith(correct)) b.classList.add('correct');
+        });
+    }
+}
+</script>
+
+</body>
+</html>
