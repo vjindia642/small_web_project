@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stack Visualizer (LIFO)</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --bg: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+
+        .stack-container {
+            border: 4px solid #2d3436;
+            border-top: none;
+            height: 300px;
+            width: 150px;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column-reverse; /* Bottom up */
+            align-items: center;
+            padding: 5px;
+            border-radius: 0 0 10px 10px;
+            background: #dfe6e9;
+        }
+
+        .item {
+            width: 90%;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: bold;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+        }
+
+        .push-btn { background: #00b894; }
+        .pop-btn { background: #d63031; }
+        
+        .status {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #636e72;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Stack (LIFO)</h2>
+    <div class="stack-container" id="stack-box">
+        </div>
+
+    <div class="controls">
+        <button class="push-btn" onclick="pushItem()">Push</button>
+        <button class="pop-btn" onclick="popItem()">Pop</button>
+    </div>
+
+    <div class="status" id="status-text">Top: null</div>
+</div>
+
+<script>
+    let stack = [];
+    const maxStack = 6;
+
+    function updateUI() {
+        const box = document.getElementById('stack-box');
+        const status = document.getElementById('status-text');
+        
+        box.innerHTML = '';
+        stack.forEach(val => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerText = val;
+            box.appendChild(div);
+        });
+
+        status.innerText = stack.length > 0 ? `Top: ${stack[stack.length - 1]}` : "Stack is Empty";
+    }
+
+    function pushItem() {
+        if (stack.length < maxStack) {
+            const newVal = Math.floor(Math.random() * 100);
+            stack.push(newVal);
+            updateUI();
+        } else {
+            alert("Stack Overflow!");
+        }
+    }
+
+    function popItem() {
+        if (stack.length > 0) {
+            stack.pop();
+            updateUI();
+        } else {
+            alert("Stack Underflow!");
+        }
+    }
+</script>
+
+</body>
+</html>
